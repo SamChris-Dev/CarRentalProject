@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.effect.Reflection?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #151515;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.carrental.AvailableCars">
+   <left>
+      <AnchorPane prefHeight="400.0" prefWidth="174.0" style="-fx-background-color: #000000;" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="backToMainMenu" layoutX="18.0" layoutY="336.0" mnemonicParsing="false" onAction="#userBackToMainMenu" prefHeight="32.0" prefWidth="133.0" text="Back" />
+            <TextFlow layoutX="10.0" layoutY="244.0" prefHeight="47.0" prefWidth="132.0" />
+            <ImageView fitHeight="88.0" fitWidth="159.0" layoutX="6.0" layoutY="104.0">
+               <image>
+                  <Image url="@img/image.png" />
+               </image>
+               <effect>
+                  <Reflection bottomOpacity="0.16" fraction="0.5" topOffset="-10.0" topOpacity="0.33" />
+               </effect>
+            </ImageView>   <Text boundsType="VISUAL" fill="#ffc200" layoutX="14.0" layoutY="240.0" opacity="0.64" text="This is the list of available cars. Select one to rent!" textAlignment="JUSTIFY" wrappingWidth="136.197265625">
+               <font>
+                  <Font name="Calibri Bold" size="12.0" />
+               </font>
+            </Text>
+              <Button fx:id="rentButton" layoutX="18.0" layoutY="288.0" onAction="#handleRent" prefHeight="33.0" prefWidth="133.0" style="-fx-background-color: #FFC900;" text="Rent Selected Car">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="CLOSED_HAND" />
+               </cursor>
+            </Button>
+
+         </children>
+      </AnchorPane>
+   </left>
+   <right>
+        <TableView fx:id="carTable" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="404.0" prefWidth="426.0" BorderPane.alignment="CENTER">
+            <columns>
+                <TableColumn fx:id="idCol" prefWidth="50.0" text="Car ID" />
+                <TableColumn fx:id="modelCol" prefWidth="102.0" text="Model" />
+                <TableColumn fx:id="fuelCol" prefWidth="76.0" text="Fuel Type" />
+                <TableColumn fx:id="priceCol" prefWidth="94.0" text="Price / day (zl)" />
+                <TableColumn fx:id="accCol" prefWidth="103.0" text="Accessories" />
+            </columns>
+        </TableView>
+   </right>
+
+</BorderPane>

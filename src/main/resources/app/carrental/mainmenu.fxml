@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #171717;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.carrental.MainMenu">
+   <center>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </center>
+   <top>
+        <AnchorPane prefHeight="147.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="400.0" fitWidth="252.0" pickOnBounds="true">
+               <image>
+                  <Image url="@img/mainmenu.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="340.0" layoutY="73.0" text="Main Menu" textFill="#ffc200">
+               <font>
+                  <Font name="System Bold" size="31.0" />
+               </font>
+            </Label>
+            <ImageView fitHeight="55.0" fitWidth="63.0" layoutX="399.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@img/logomainmenu.png" />
+               </image>
+            </ImageView>
+            <Pane layoutX="287.0" layoutY="119.0" prefHeight="243.0" prefWidth="275.0" style="-fx-border-color: #FFC200; -fx-border-radius: 8;">
+               <children>
+                      <Button fx:id="logout" layoutX="37.0" layoutY="193.0" mnemonicParsing="false" onAction="#userLogOut" prefHeight="35.0" prefWidth="204.0" style="-fx-background-color: #FFC900;" text="Log Out">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                      </Button>
+                  <Button fx:id="availableCars" layoutX="36.0" layoutY="31.0" mnemonicParsing="false" onAction="#userAvailableCars" prefHeight="39.0" prefWidth="209.0" text="Available Cars" />
+                  <Button fx:id="rentedCars" layoutX="37.0" layoutY="83.0" mnemonicParsing="false" onAction="#userRentedCars" prefHeight="35.0" prefWidth="208.0" text="Rented Cars" />
+                  <Button fx:id="historyBtn" layoutX="37.0" layoutY="134.0" mnemonicParsing="false" onAction="#userHistory" prefHeight="38.0" prefWidth="204.0" text="Car and Client History" />
+               </children>
+            </Pane>
+         </children>
+        </AnchorPane>
+   </top>
+</BorderPane>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.effect.Reflection?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.carrental.RentedCars">
+   <left>
+      <AnchorPane prefHeight="400.0" prefWidth="187.0" style="-fx-background-color: #000000;" BorderPane.alignment="CENTER">
+         <children>
+              <Button fx:id="returnBtn" layoutX="12.0" layoutY="300.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#handleReturn" prefHeight="33.0" prefWidth="167.0" style="-fx-background-color: #FFC900;" text="Return Car">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="CLOSED_HAND" />
+               </cursor>
+            </Button>
+            <Button fx:id="backToMainMenuTwo" layoutX="12.0" layoutY="343.0" mnemonicParsing="false" onAction="#userBackToMainMenuTwo" prefHeight="33.0" prefWidth="167.0" text="Back" />
+            <Text boundsType="VISUAL" fill="#ffc200" layoutX="17.0" layoutY="243.0" opacity="0.64" text="This is the list of Rented cars. Select one to return" textAlignment="JUSTIFY" wrappingWidth="152.75975036621094">
+               <font>
+                  <Font name="Calibri Bold" size="12.0" />
+               </font>
+            </Text>
+            <ImageView fitHeight="88.0" fitWidth="173.0" layoutX="6.0" layoutY="79.0">
+               <image>
+                  <Image url="@img/image.png" />
+               </image>
+               <effect>
+                  <Reflection bottomOpacity="0.16" fraction="0.5" topOffset="-10.0" topOpacity="0.33" />
+               </effect>
+            </ImageView>
+         </children>
+      </AnchorPane>
+   </left>
+   <right>
+        <TableView fx:id="rentalTable" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="403.0" BorderPane.alignment="CENTER">
+            <columns>
+                <TableColumn fx:id="idCol" text="Rental ID" />
+                <TableColumn fx:id="nameCol" text="Client" />
+                <TableColumn fx:id="carCol" text="Car" />
+                <TableColumn fx:id="daysCol" text="Days" />
+                <TableColumn fx:id="priceCol" text="Total Price" />
+            </columns>
+        </TableView>
+   </right>
+
+</BorderPane>

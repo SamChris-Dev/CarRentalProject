@@ -1,0 +1,2 @@
+4,Son,789567234,38,Benz c300,Electric,90.0,Comfort|AC,3,270.0
+7,Chris,767367356,14,Cadillac,Petrol,500.0,Traffic nav|AC,10,5000.0
