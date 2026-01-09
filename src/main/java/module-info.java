@@ -7,6 +7,7 @@ module app.carrental {
     requires org.kordamp.bootstrapfx.core;
     requires javafx.base;
 
-    opens app.carrental to javafx.fxml;
+    opens app.carrental to org.junit.platform.commons, javafx.fxml;
+
     exports app.carrental;
 }
