@@ -1,13 +1,1 @@
-8,Prado tx,Diesel,190.0,Off-road|AC
-9,Ford raptor,Petrol,50.0,Cruise control|AC
-37,Mark II,Petrol,50.0,AC|Drift package
-30,Nissan xTrail,Petrol,35.0,Traction control|AC
-6,Benz c200,Electric,90.0,Comfort|AC
-3,BMW M2,Petrol,100.0,AC|Sport Mode
-32,Mark x,Petrol,50.0,Autopilot|AC
-31,Prado gx,Petrol,50.0,AC|Sport Mode
-17,Mark II,Petrol,50.0,AC|Drift package
-2,Tesla Model 3,Electric,90.0,Autopilot|AC
-33,LC 300,Hybrid,90.0,Off-road|Air sus
-5,Porsche 911 ,Petrol,145.0,AC|Bluetooth
-18,Benz c300,Electric,90.0,Comfort|AC
+2,Honda Civic,Diesel,55.0,GPS,AC

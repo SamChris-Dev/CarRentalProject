@@ -14,14 +14,15 @@
 <BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.carrental.History">
 
     <center>
-        <TableView fx:id="historyTable">
+        <TableView fx:id="historyTable" prefHeight="400.0" prefWidth="441.0">
             <columns>
-                <TableColumn fx:id="idCol" prefWidth="63.0" text="Rental ID" />
-                <TableColumn fx:id="nameCol" prefWidth="73.0" text="Client" />
-                <TableColumn fx:id="carCol" prefWidth="58.0" text="Car" />
-                <TableColumn fx:id="daysCol" prefWidth="37.0" text="Days" />
-                <TableColumn fx:id="priceCol" minWidth="0.0" prefWidth="43.0" text="Total" />
-                <TableColumn fx:id="dateCol" prefWidth="206.0" text="Returned At" />
+                    <TableColumn fx:id="historyIdCol" prefWidth="72.0" text="History ID" />
+                    <TableColumn fx:id="rentalIdCol" prefWidth="62.0" text="Rental ID" />
+                    <TableColumn fx:id="clientCol" prefWidth="96.0" text="Client" />
+                    <TableColumn fx:id="carIdCol" prefWidth="68.0" text="Car ID" />
+                    <TableColumn fx:id="daysCol" prefWidth="44.0" text="Days" />
+                    <TableColumn fx:id="totalCol" prefWidth="79.0" text="Total Price" />
+                    <TableColumn fx:id="dateCol" prefWidth="139.0" text="Returned On" />
             </columns>
         </TableView>
     </center>
