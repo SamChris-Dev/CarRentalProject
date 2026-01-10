@@ -32,7 +32,6 @@ public class History implements Initializable {
     @FXML private Button backToMainMenuThree;
 
     private final ObservableList<HistoryRecord> records = FXCollections.observableArrayList();
-    private static final String FILE = "history.txt";
 
     @FXML
     private void userBackToMainMenuThree(ActionEvent event) throws IOException{
@@ -89,31 +88,7 @@ public class History implements Initializable {
         }
     }
 
-    /*private void loadHistory() {
 
-        File f = new File(FILE);
-        if (!f.exists()) return;
-
-        try (BufferedReader br = new BufferedReader(new FileReader(f))) {
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                String[] d = line.split(",");
-                if (d.length != 7) continue;
-
-                records.add(new HistoryRecord(
-                        Integer.parseInt(d[0]),
-                        d[1], d[2],
-                        d[3],
-                        Integer.parseInt(d[4]),
-                        Double.parseDouble(d[5]),
-                        d[6]
-                ));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
 
 
 }

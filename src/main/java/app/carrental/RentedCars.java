@@ -34,9 +34,7 @@ public class RentedCars implements Initializable {
     @FXML private Button backToMainMenuTwo;
 
     private final ObservableList<Rental> rentals = FXCollections.observableArrayList();
-    private static final String RENTAL_FILE = "rentals.txt";
-    private static final String CAR_FILE = "cars.txt";
-    private static final String HISTORY_FILE = "history.txt";
+
 
 
     @FXML
@@ -65,7 +63,15 @@ public class RentedCars implements Initializable {
 
         rentals.clear();
 
-        String sql = "SELECT * FROM rentals";
+        String sql = "SELECT r.rental_id,\n" +
+                "       r.client_name,\n" +
+                "       r.phone,\n" +
+                "       r.car_id,\n" +
+                "       c.model,\n" +
+                "       r.days,\n" +
+                "       r.total_price\n" +
+                "FROM rentals r\n" +
+                "JOIN cars c ON r.car_id = c.car_id\n";
 
         try (
                 Connection con = DBConnection.getConnection();
@@ -78,7 +84,7 @@ public class RentedCars implements Initializable {
                         rs.getString("client_name"),
                         rs.getString("phone"),
                         rs.getInt("car_id"),
-                        null,  // model not needed here
+                        rs.getString("Model"),
                         null,
                         0,
                         null,
@@ -93,42 +99,7 @@ public class RentedCars implements Initializable {
 
 
 
-    private void loadRentals() {
 
-        rentals.clear();
-
-        File file = new File(RENTAL_FILE);
-        if (!file.exists()) return;
-
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-
-            while ((line = br.readLine()) != null) {
-
-                String[] d = line.split(",");
-
-
-                if (d.length != 10) continue;
-
-                rentals.add(new Rental(
-                        Integer.parseInt(d[0]),
-                        d[1], d[2],
-                        Integer.parseInt(d[3]),
-                        d[4],
-                        d[5],
-                        Double.parseDouble(d[6]),
-                        d[7],
-                        Integer.parseInt(d[8]),
-                        Double.parseDouble(d[9])
-
-
-                ));
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     @FXML
     private void handleReturn() {
@@ -177,113 +148,7 @@ public class RentedCars implements Initializable {
 
     }
 
-    /*private void handleReturn() {
 
-        Rental selected = rentalTable.getSelectionModel().getSelectedItem();
-        if (selected == null) return;
-
-
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Confirm Return");
-        confirm.setHeaderText("Return selected car?");
-        confirm.setContentText(
-                "Car: " + selected.getCarModel() +
-                        "\nClient: " + selected.getClientName()
-        );
-
-        Optional<ButtonType> result = confirm.showAndWait();
-        if (result.isEmpty() || result.get() != ButtonType.OK) {
-            return;
-        }
-
-        returnBtn.setDisable(true);
-
-        try {
-
-            loadRentals();
-
-
-            rentals.removeIf(r ->
-                    r.getRentalId() == selected.getRentalId()
-            );
-
-
-            saveRentals();
-
-
-            try (BufferedWriter bw = new BufferedWriter(
-                    new FileWriter(CAR_FILE, true))) {
-
-                bw.write(
-                        selected.getCarId() + "," +
-                                selected.getCarModel() + "," +
-                                selected.getFuelType() + "," +
-                                selected.getPricePerDay() + "," +
-                                selected.getAccessories()
-                );
-                bw.newLine();
-            }
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(HISTORY_FILE, true))) {
-                bw.write(
-                        selected.getRentalId() + "," +
-                                selected.getClientName() + "," +
-                                selected.getPhone() + "," +
-                                selected.getCarModel() + "," +
-                                selected.getDays() + "," +
-                                selected.getTotalPrice() + "," +
-                                java.time.LocalDateTime.now()
-                );
-                bw.newLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-            loadRentals();
-            rentalTable.refresh();
-
-            new Alert(Alert.AlertType.INFORMATION,
-                    "Car returned successfully.")
-                    .showAndWait();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            new Alert(Alert.AlertType.ERROR,
-                    "Failed to return car.")
-                    .showAndWait();
-        } finally {
-            returnBtn.setDisable(true);
-        }
-    }*/
-
-
-
-    private void saveRentals() {
-
-        try (BufferedWriter bw = new BufferedWriter(
-                new FileWriter(RENTAL_FILE))) {
-
-            for (Rental r : rentals) {
-                bw.write(
-                        r.getRentalId() + "," +
-                                r.getClientName() + "," +
-                                r.getPhone() + "," +
-                                r.getCarId() + "," +
-                                r.getCarModel() + "," +
-                                r.getFuelType() + "," +
-                                r.getPricePerDay() + "," +
-                                r.getAccessories() + "," +
-                                r.getDays() + "," +
-                                r.getTotalPrice()
-
-                );
-                bw.newLine();
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
 
 }

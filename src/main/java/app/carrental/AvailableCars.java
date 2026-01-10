@@ -28,6 +28,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import java.util.Optional;
 
+import client.CarApiClient;
+
 public class AvailableCars implements Initializable {
 
     @FXML private TableView<Car> carTable;
@@ -41,8 +43,7 @@ public class AvailableCars implements Initializable {
     @FXML private Button addButton;
 
     private final ObservableList<Car> cars = FXCollections.observableArrayList();
-    private static final String FILE = "cars.txt";
-    private static final String RENTAL_FILE = "rentals.txt";
+
 
 
     @Override
@@ -54,7 +55,9 @@ public class AvailableCars implements Initializable {
         priceCol.setCellValueFactory(new PropertyValueFactory<>("pricePerDay"));
         accCol.setCellValueFactory(new PropertyValueFactory<>("accessories"));
 
-        loadCarsFromDB();
+        //loadCarsFromDB();
+        loadCarsFromServer();
+
         carTable.setItems(cars);
 
         carTable.getSelectionModel().selectedItemProperty().addListener(
@@ -108,7 +111,7 @@ public class AvailableCars implements Initializable {
 
             con.setAutoCommit(false);
 
-            // 1. Insert into rentals
+            //  Insert into rentals
             PreparedStatement ps1 = con.prepareStatement(
                     "INSERT INTO rentals VALUES (rental_seq.NEXTVAL,?,?,?,?,?,SYSDATE)"
             );
@@ -118,7 +121,7 @@ public class AvailableCars implements Initializable {
             ps1.setInt(4, d);
             ps1.setDouble(5, total);
 
-            // 2. Update car status
+            //  Update car status
             PreparedStatement ps2 = con.prepareStatement(
                     "UPDATE cars SET status = 'RENTED' WHERE car_id = ?"
             );
@@ -133,123 +136,11 @@ public class AvailableCars implements Initializable {
             e.printStackTrace();
         }
 
-        int rentalId = generateRentalId();
-
-
-
-
-        try (BufferedWriter bw = new BufferedWriter(
-                new FileWriter(RENTAL_FILE, true))) {
-
-            bw.write(
-                    rentalId + "," +
-                            name.getText().trim() + "," +
-                            phone.getText().trim() + "," +
-                            selected.getCarId() + "," +
-                            selected.getModel() + "," +
-                            selected.getFuelType() + "," +
-                            selected.getPricePerDay() + "," +
-                            selected.getAccessories() + "," +
-                            d + "," +
-                            total
-            );
-            bw.newLine();
-
-        } catch (IOException e) { e.printStackTrace(); }
 
         cars.remove(selected);
-        saveCars();
+
     }
 
-    private void loadCars() {
-        cars.clear();
-        File file = new File(FILE);
-        if (!file.exists()) createSampleData();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] d = line.split(",");
-                if (d.length != 5) continue;
-                cars.add(new Car(
-                        Integer.parseInt(d[0]),
-                        d[1],
-                        d[2],
-                        Double.parseDouble(d[3]),
-                        d[4]
-                ));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void saveCars() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE))) {
-            for (Car c : cars) {
-                bw.write(c.getCarId() + "," + c.getModel() + "," +
-                        c.getFuelType() + "," + c.getPricePerDay() + "," +
-                        c.getAccessories());
-                bw.newLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void createSampleData() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE))) {
-            bw.write("1,Toyota Corolla,Petrol,45.0,AC|Bluetooth");
-            bw.newLine();
-            bw.write("2,Honda Civic,Diesel,55.0,GPS|AC");
-            bw.newLine();
-            bw.write("3,Tesla Model 3,Electric,90.0,Autopilot|AC");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    private int generateRentalId() {
-
-        File file = new File(RENTAL_FILE);
-
-
-        if (!file.exists() || file.length() == 0) {
-            return 1;
-        }
-
-        int maxId = 0;
-
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-
-            while ((line = br.readLine()) != null) {
-
-
-                if (line.trim().isEmpty()) continue;
-
-                String[] d = line.split(",");
-
-
-                if (d.length != 10) continue;
-
-                try {
-                    int id = Integer.parseInt(d[0].trim());
-                    if (id > maxId) {
-                        maxId = id;
-                    }
-                } catch (NumberFormatException ignored) {
-
-                }
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return maxId + 1;
-    }
 
 
     private void loadCarsFromDB() {
@@ -279,6 +170,18 @@ public class AvailableCars implements Initializable {
         }
     }
 
+    private void loadCarsFromServer() {
+
+        cars.clear();
+
+        try {
+            cars.addAll(CarApiClient.fetchAvailableCars());
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR,
+                    "Cannot connect to server").show();
+        }
+    }
 
 
 

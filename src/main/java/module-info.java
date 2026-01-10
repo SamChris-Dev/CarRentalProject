@@ -7,7 +7,15 @@ module app.carrental {
     requires org.kordamp.bootstrapfx.core;
     requires javafx.base;
 
-    opens app.carrental to org.junit.platform.commons, javafx.fxml;
+    requires spark.core;
+
+    requires com.google.gson;
+    requires com.oracle.database.jdbc;
+    opens server to spark.core, com.google.gson;
+
+
+
+    opens app.carrental to org.junit.platform.commons, com.google.gson, javafx.fxml;
 
     exports app.carrental;
 }
