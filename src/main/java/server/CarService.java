@@ -31,4 +31,44 @@ public class CarService {
         }
         return cars;
     }
+
+    public static void rentCar(
+            int carId,
+            String customerName,
+            int days
+    ) throws Exception {
+
+        Connection con = DBConnection.getConnection();
+
+        // 1. Insert rental
+        PreparedStatement ps = con.prepareStatement(
+                "INSERT INTO rentals (rental_id, car_id, customer_name, days) " +
+                        "VALUES (rent_seq.NEXTVAL, ?, ?, ?)"
+        );
+        ps.setInt(1, carId);
+        ps.setString(2, customerName);
+        ps.setInt(3, days);
+        ps.executeUpdate();
+
+        // 2. Update car status
+        PreparedStatement ps2 = con.prepareStatement(
+                "UPDATE cars SET status='RENTED' WHERE car_id=?"
+        );
+        ps2.setInt(1, carId);
+        ps2.executeUpdate();
+
+        // 3. Insert history
+        PreparedStatement ps3 = con.prepareStatement(
+                "INSERT INTO rental_history " +
+                        "(history_id, car_id, customer_name, days, action_date) " +
+                        "VALUES (history_seq.NEXTVAL, ?, ?, ?, SYSDATE)"
+        );
+        ps3.setInt(1, carId);
+        ps3.setString(2, customerName);
+        ps3.setInt(3, days);
+        ps3.executeUpdate();
+
+        con.close();
+    }
+
 }

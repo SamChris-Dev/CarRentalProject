@@ -2,6 +2,7 @@ package server;
 
 import static spark.Spark.*;
 import com.google.gson.Gson;
+import dto.RentRequest;
 
 public class CarRentalServer {
 
@@ -18,6 +19,18 @@ public class CarRentalServer {
                 res.status(500);
                 return "Internal Error: " + e.getMessage();
             }
+        });
+
+        post("/rent", (req, res) -> {
+
+            Gson gson = new Gson();
+            RentRequest rentRequest =
+                    gson.fromJson(req.body(), RentRequest.class);
+
+            RentalService.rentCar(rentRequest);
+
+            res.status(200);
+            return "Car rented successfully";
         });
     }
 }

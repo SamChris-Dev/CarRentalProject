@@ -13,11 +13,11 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
+//import java.sql.Connection;
+//import java.sql.ResultSet;
+//import java.sql.Statement;
 
-import java.sql.PreparedStatement;
+//import java.sql.PreparedStatement;
 
 
 import javafx.scene.control.Alert;
@@ -29,6 +29,7 @@ import javafx.scene.layout.GridPane;
 import java.util.Optional;
 
 import client.CarApiClient;
+import server.CarRentalServer;
 
 public class AvailableCars implements Initializable {
 
@@ -107,7 +108,17 @@ public class AvailableCars implements Initializable {
         int d = Integer.parseInt(days.getText());
         double total = d * selected.getPricePerDay();
 
-        try (Connection con = DBConnection.getConnection()) {
+
+
+
+
+
+
+
+
+
+
+       /* try (Connection con = DBConnection.getConnection()) {
 
             con.setAutoCommit(false);
 
@@ -134,7 +145,7 @@ public class AvailableCars implements Initializable {
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
 
         cars.remove(selected);
@@ -143,7 +154,7 @@ public class AvailableCars implements Initializable {
 
 
 
-    private void loadCarsFromDB() {
+   /* private void loadCarsFromDB() {
 
         cars.clear();
 
@@ -168,7 +179,7 @@ public class AvailableCars implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     private void loadCarsFromServer() {
 
@@ -221,7 +232,7 @@ public class AvailableCars implements Initializable {
             return;
         }
 
-        try (Connection con = DBConnection.getConnection()) {
+       /* try (Connection con = DBConnection.getConnection()) {
 
             PreparedStatement ps = con.prepareStatement(
                     "INSERT INTO cars VALUES (car_seq.NEXTVAL,?,?,?,?, 'AVAILABLE')"
@@ -238,7 +249,7 @@ public class AvailableCars implements Initializable {
             e.printStackTrace();
         }
 
-        loadCarsFromDB();
+        loadCarsFromDB();*/
     }
 
 

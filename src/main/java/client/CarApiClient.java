@@ -10,6 +10,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+import java.io.OutputStream;
+
+
 public class CarApiClient {
 
     private static final String BASE_URL = "http://localhost:8080";
@@ -35,4 +38,33 @@ public class CarApiClient {
         reader.close();
         return cars;
     }
+
+    public static void rentCar(
+            int carId,
+            String customerName,
+            int days
+    ) throws Exception {
+
+        URL url = new URL(BASE_URL + "/rent");
+        HttpURLConnection connection =
+                (HttpURLConnection) url.openConnection();
+
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setDoOutput(true);
+
+        String json =
+                "{ \"carId\": " + carId +
+                        ", \"customerName\": \"" + customerName +
+                        "\", \"days\": " + days + " }";
+
+        OutputStream os = connection.getOutputStream();
+        os.write(json.getBytes());
+        os.flush();
+        os.close();
+
+        // Force request execution
+        connection.getInputStream().close();
+    }
+
 }
