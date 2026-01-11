@@ -9,15 +9,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
-import java.sql.PreparedStatement;
-
 import java.io.*;
 import java.net.URL;
 import java.util.Date;
 import java.util.ResourceBundle;
-
-
 
 public class History implements Initializable {
 
@@ -41,31 +36,25 @@ public class History implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        historyIdCol.setCellValueFactory(
-                new PropertyValueFactory<>("historyId"));
-        rentalIdCol.setCellValueFactory(
-                new PropertyValueFactory<>("rentalId"));
-        clientCol.setCellValueFactory(
-                new PropertyValueFactory<>("clientName"));
-        carIdCol.setCellValueFactory(
-                new PropertyValueFactory<>("carId"));
-        daysCol.setCellValueFactory(
-                new PropertyValueFactory<>("days"));
-        totalCol.setCellValueFactory(
-                new PropertyValueFactory<>("totalPrice"));
-        dateCol.setCellValueFactory(
-                new PropertyValueFactory<>("returnDate"));
+        historyIdCol.setCellValueFactory(new PropertyValueFactory<>("historyId"));
+        rentalIdCol.setCellValueFactory(new PropertyValueFactory<>("rentalId"));
+        clientCol.setCellValueFactory(new PropertyValueFactory<>("clientName"));
+        carIdCol.setCellValueFactory(new PropertyValueFactory<>("carId"));
+        daysCol.setCellValueFactory(new PropertyValueFactory<>("days"));
+        totalCol.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
 
+
+        dateCol.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
 
         loadHistoryFromDB();
         historyTable.setItems(records);
     }
 
     private void loadHistoryFromDB() {
-
         records.clear();
 
-        String sql = "SELECT * FROM rental_history ORDER BY return_date DESC";
+
+        String sql = "SELECT * FROM rental_history ORDER BY action_date DESC";
 
         try (
                 Connection con = DBConnection.getConnection();
@@ -80,15 +69,11 @@ public class History implements Initializable {
                         rs.getInt("car_id"),
                         rs.getInt("days"),
                         rs.getDouble("total_price"),
-                        rs.getDate("return_date")
+                        rs.getDate("action_date")
                 ));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-
-
-
 }

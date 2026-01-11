@@ -12,7 +12,6 @@ public class CarService {
     public static List<Car> getAvailableCars() throws Exception {
 
         List<Car> cars = new ArrayList<>();
-
         String sql = "SELECT * FROM cars WHERE status='AVAILABLE'";
 
         try (Connection con = DBConnection.getConnection();
@@ -32,43 +31,70 @@ public class CarService {
         return cars;
     }
 
-    public static void rentCar(
-            int carId,
-            String customerName,
-            int days
-    ) throws Exception {
+
+
+    public static void rentCar(int carId, String clientName, String phone, int days) throws Exception {
 
         Connection con = DBConnection.getConnection();
+        con.setAutoCommit(false);
 
-        // 1. Insert rental
-        PreparedStatement ps = con.prepareStatement(
-                "INSERT INTO rentals (rental_id, car_id, customer_name, days) " +
-                        "VALUES (rent_seq.NEXTVAL, ?, ?, ?)"
-        );
-        ps.setInt(1, carId);
-        ps.setString(2, customerName);
-        ps.setInt(3, days);
-        ps.executeUpdate();
+        try {
+            double pricePerDay = 0.0;
+            String priceSql = "SELECT price_per_day FROM cars WHERE car_id = ?";
+            try (PreparedStatement psPrice = con.prepareStatement(priceSql)) {
+                psPrice.setInt(1, carId);
+                try (ResultSet rs = psPrice.executeQuery()) {
+                    if (rs.next()) {
+                        pricePerDay = rs.getDouble("price_per_day");
+                    }
+                }
+            }
 
-        // 2. Update car status
-        PreparedStatement ps2 = con.prepareStatement(
-                "UPDATE cars SET status='RENTED' WHERE car_id=?"
-        );
-        ps2.setInt(1, carId);
-        ps2.executeUpdate();
+            double totalPrice = pricePerDay * days;
 
-        // 3. Insert history
-        PreparedStatement ps3 = con.prepareStatement(
-                "INSERT INTO rental_history " +
-                        "(history_id, car_id, customer_name, days, action_date) " +
-                        "VALUES (history_seq.NEXTVAL, ?, ?, ?, SYSDATE)"
-        );
-        ps3.setInt(1, carId);
-        ps3.setString(2, customerName);
-        ps3.setInt(3, days);
-        ps3.executeUpdate();
+            String insertRentalSql = "INSERT INTO rentals (rental_id, car_id, client_name, phone, days, total_price) " +
+                    "VALUES (rent_seq.NEXTVAL, ?, ?, ?, ?, ?)";
 
-        con.close();
+            PreparedStatement ps = con.prepareStatement(insertRentalSql);
+            ps.setInt(1, carId);
+            ps.setString(2, clientName);
+            ps.setString(3, phone);
+            ps.setInt(4, days);
+            ps.setDouble(5, totalPrice);
+            ps.executeUpdate();
+            ps.close();
+
+            String updateCarSql = "UPDATE cars SET status='RENTED' WHERE car_id=?";
+            PreparedStatement ps2 = con.prepareStatement(updateCarSql);
+            ps2.setInt(1, carId);
+            ps2.executeUpdate();
+            ps2.close();
+
+
+            con.commit();
+
+        } catch (Exception e) {
+            if (con != null) con.rollback();
+            throw e;
+        } finally {
+            if (con != null) con.close();
+        }
     }
 
+
+    public static void addCar(Car car) throws Exception {
+        Connection con = DBConnection.getConnection();
+        String sql = "INSERT INTO cars (car_id, model, fuel_type, price_per_day, accessories, status) " +
+                "VALUES (car_seq.NEXTVAL, ?, ?, ?, ?, 'AVAILABLE')";
+
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, car.getModel());
+            ps.setString(2, car.getFuelType());
+            ps.setDouble(3, car.getPricePerDay());
+            ps.setString(4, car.getAccessories());
+            ps.executeUpdate();
+        } finally {
+            con.close();
+        }
+    }
 }

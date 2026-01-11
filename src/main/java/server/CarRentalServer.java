@@ -15,22 +15,50 @@ public class CarRentalServer {
                 res.type("application/json");
                 return new Gson().toJson(CarService.getAvailableCars());
             } catch (Exception e) {
-                e.printStackTrace(); // This will print the real error in your IntelliJ console
+                e.printStackTrace();
                 res.status(500);
                 return "Internal Error: " + e.getMessage();
             }
         });
 
         post("/rent", (req, res) -> {
+            try {
+                Gson gson = new Gson();
+                RentRequest rentRequest = gson.fromJson(req.body(), RentRequest.class);
 
-            Gson gson = new Gson();
-            RentRequest rentRequest =
-                    gson.fromJson(req.body(), RentRequest.class);
+                CarService.rentCar(
+                        rentRequest.getCarId(),
+                        rentRequest.getClientName(),
+                        rentRequest.getPhone(),
+                        rentRequest.getDays()
+                );
 
-            RentalService.rentCar(rentRequest);
+                res.status(200);
+                return "Car rented successfully";
 
-            res.status(200);
-            return "Car rented successfully";
+            } catch (Exception e) {
+                e.printStackTrace();
+                res.status(500);
+                return "Rent Failed: " + e.getMessage();
+            }
+        });
+
+
+        post("/addcar", (req, res) -> {
+            try {
+                Gson gson = new Gson();
+
+                app.carrental.Car newCar = gson.fromJson(req.body(), app.carrental.Car.class);
+
+                CarService.addCar(newCar);
+
+                res.status(200);
+                return "Car added successfully";
+            } catch (Exception e) {
+                e.printStackTrace();
+                res.status(500);
+                return "Error adding car: " + e.getMessage();
+            }
         });
     }
 }

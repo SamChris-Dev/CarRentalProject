@@ -14,7 +14,7 @@ public class RentalService {
         con.setAutoCommit(false);
 
         try {
-            // Insert rental
+
             String rentalSql =
                     "INSERT INTO rentals(client_name, phone, car_id, days) VALUES(?,?,?,?)";
 
@@ -25,7 +25,7 @@ public class RentalService {
             ps.setInt(4, req.getDays());
             ps.executeUpdate();
 
-            // Update car status
+
             String carSql =
                     "UPDATE cars SET status='RENTED' WHERE car_id=?";
 

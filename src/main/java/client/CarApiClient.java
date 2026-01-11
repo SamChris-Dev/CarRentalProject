@@ -63,8 +63,27 @@ public class CarApiClient {
         os.flush();
         os.close();
 
-        // Force request execution
         connection.getInputStream().close();
+    }
+
+    public static void addCar(Car car) throws Exception {
+        URL url = new URL(BASE_URL + "/addcar");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setDoOutput(true);
+
+        String json = new Gson().toJson(car);
+
+        try (OutputStream os = connection.getOutputStream()) {
+            os.write(json.getBytes());
+        }
+
+        if (connection.getResponseCode() != 200) {
+            throw new RuntimeException("Failed to add car on server");
+        }
+        connection.disconnect();
     }
 
 }

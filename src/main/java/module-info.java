@@ -11,6 +11,8 @@ module app.carrental {
 
     requires com.google.gson;
     requires com.oracle.database.jdbc;
+
+    opens dto to com.google.gson;
     opens server to spark.core, com.google.gson;
 
 

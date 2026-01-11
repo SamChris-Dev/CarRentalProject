@@ -28,16 +28,13 @@ public class CarDatabaseTest {
             int rows = ps.executeUpdate();
             assertEquals(1, rows);
 
-            // Verify it exists
             ResultSet rs = con.createStatement()
                     .executeQuery("SELECT * FROM cars WHERE model='TEST CAR'");
 
             assertTrue(rs.next());
 
-            //clean-up
             con.createStatement()
                     .executeUpdate("DELETE FROM cars WHERE model='TEST CAR'");
-            //con.commit();
         }
 
 
@@ -50,40 +47,57 @@ public class CarDatabaseTest {
 
             con.setAutoCommit(false);
 
-            // Insert test car
-            con.createStatement().executeUpdate(
-                    "INSERT INTO cars VALUES (car_seq.NEXTVAL,'RENT TEST','Petrol',50,'NONE','AVAILABLE')"
-            );
+            String insertCarSql = "INSERT INTO cars (car_id, model, fuel_type, price_per_day, accessories, status) " +
+                    "VALUES (car_seq.NEXTVAL, ?, ?, ?, ?, 'AVAILABLE')";
 
+            PreparedStatement psCar = con.prepareStatement(insertCarSql);
+            psCar.setString(1, "TEST_RENT_UNIT");
+            psCar.setString(2, "Electric");
+            psCar.setDouble(3, 100.0);
+            psCar.setString(4, "None");
+            psCar.executeUpdate();
+
+            int carId = 0;
             ResultSet rs = con.createStatement()
-                    .executeQuery("SELECT car_id FROM cars WHERE model='RENT TEST'");
-            rs.next();
-            int carId = rs.getInt(1);
+                    .executeQuery("SELECT car_id FROM cars WHERE model='TEST_RENT_UNIT'");
+            if (rs.next()) {
+                carId = rs.getInt("car_id");
+            }
 
-            // Rent it
-            PreparedStatement ps1 = con.prepareStatement(
-                    "INSERT INTO rentals VALUES (rental_seq.NEXTVAL,'JUnit','000',?,?,?,SYSDATE)"
-            );
-            ps1.setInt(1, carId);
-            ps1.setInt(2, 2);
-            ps1.setDouble(3, 100);
+            String insertRentalSql = "INSERT INTO rentals (rental_id, car_id, client_name, phone, days, total_price) " +
+                    "VALUES (rent_seq.NEXTVAL, ?, ?, ?, ?, ?)";
 
-            PreparedStatement ps2 = con.prepareStatement(
+            PreparedStatement psRent = con.prepareStatement(insertRentalSql);
+            psRent.setInt(1, carId);
+            psRent.setString(2, "JUnit Tester");
+            psRent.setString(3, "555-9999");
+            psRent.setInt(4, 5);
+            psRent.setDouble(5, 500.0);
+            psRent.executeUpdate();
+
+
+            PreparedStatement psUpdate = con.prepareStatement(
                     "UPDATE cars SET status='RENTED' WHERE car_id=?"
             );
-            ps2.setInt(1, carId);
+            psUpdate.setInt(1, carId);
+            psUpdate.executeUpdate();
 
-            ps1.executeUpdate();
-            ps2.executeUpdate();
             con.commit();
 
-            // Verify status
+
             rs = con.createStatement()
                     .executeQuery("SELECT status FROM cars WHERE car_id=" + carId);
-            rs.next();
-            assertEquals("RENTED", rs.getString(1));
+            assertTrue(rs.next());
+            assertEquals("RENTED", rs.getString("status"));
 
-            // Cleanup
+
+            rs = con.createStatement()
+                    .executeQuery("SELECT * FROM rentals WHERE car_id=" + carId);
+            assertTrue(rs.next());
+            assertEquals("JUnit Tester", rs.getString("client_name"));
+            assertEquals(500.0, rs.getDouble("total_price"));
+
+
             con.createStatement().executeUpdate(
                     "DELETE FROM rentals WHERE car_id=" + carId);
             con.createStatement().executeUpdate(
