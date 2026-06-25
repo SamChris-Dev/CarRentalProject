@@ -2,6 +2,7 @@ package app.carrental;
 
 
 import org.junit.jupiter.api.Test;
+import server.DBConnection;
 
 import java.sql.Connection;
 
