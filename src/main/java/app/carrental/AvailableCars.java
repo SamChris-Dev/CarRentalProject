@@ -2,6 +2,7 @@ package app.carrental;
 
 import client.CarApiClient;
 import client.RentalApiClient;
+import dto.Car;
 import dto.RentRequest;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

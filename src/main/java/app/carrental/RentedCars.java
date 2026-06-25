@@ -9,14 +9,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-
-import java.sql.PreparedStatement;
-
-
-
+import dto.Rental;
+import client.RentalApiClient;
 import java.io.*;
 import java.net.URL;
 import java.util.Optional;
@@ -60,40 +54,11 @@ public class RentedCars implements Initializable {
     }
 
     private void loadRentedCars() {
-
-        rentals.clear();
-
-        String sql = "SELECT r.rental_id,\n" +
-                "       r.client_name,\n" +
-                "       r.phone,\n" +
-                "       r.car_id,\n" +
-                "       c.model,\n" +
-                "       r.days,\n" +
-                "       r.total_price\n" +
-                "FROM rentals r\n" +
-                "JOIN cars c ON r.car_id = c.car_id\n";
-
-        try (
-                Connection con = DBConnection.getConnection();
-                Statement st = con.createStatement();
-                ResultSet rs = st.executeQuery(sql)
-        ) {
-            while (rs.next()) {
-                rentals.add(new Rental(
-                        rs.getInt("rental_id"),
-                        rs.getString("client_name"),
-                        rs.getString("phone"),
-                        rs.getInt("car_id"),
-                        rs.getString("Model"),
-                        null,
-                        0,
-                        null,
-                        rs.getInt("days"),
-                        rs.getDouble("total_price")
-                ));
-            }
+        try {
+            rentals.setAll(RentalApiClient.fetchRentedCars());
         } catch (Exception e) {
             e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Failed to load rentals").show();
         }
     }
 
@@ -110,42 +75,14 @@ public class RentedCars implements Initializable {
                 "Return this car?");
         if (confirm.showAndWait().get() != ButtonType.OK) return;
 
-        try (Connection con = DBConnection.getConnection()) {
-
-            con.setAutoCommit(false);
-
-            // 1. Insert into history
-            PreparedStatement ps1 = con.prepareStatement(
-                    "INSERT INTO rental_history VALUES (history_seq.NEXTVAL,?,?,?,?,?,SYSDATE)"
-            );
-            ps1.setInt(1, r.getRentalId());
-            ps1.setString(2, r.getClientName());
-            ps1.setInt(3, r.getCarId());
-            ps1.setInt(4, r.getDays());
-            ps1.setDouble(5, r.getTotalPrice());
-
-            // 2. Delete rental
-            PreparedStatement ps2 = con.prepareStatement(
-                    "DELETE FROM rentals WHERE rental_id = ?"
-            );
-            ps2.setInt(1, r.getRentalId());
-
-            // 3. Update car status
-            PreparedStatement ps3 = con.prepareStatement(
-                    "UPDATE cars SET status = 'AVAILABLE' WHERE car_id = ?"
-            );
-            ps3.setInt(1, r.getCarId());
-
-            ps1.executeUpdate();
-            ps2.executeUpdate();
-            ps3.executeUpdate();
-
-            con.commit();
-
+        try {
+            RentalApiClient.returnCar(r.getRentalId());
+            rentals.remove(r);
+            new Alert(Alert.AlertType.INFORMATION, "Car returned successfully!").show();
         } catch (Exception e) {
             e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Failed to return car").show();
         }
-
     }
 
 

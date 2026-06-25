@@ -1,6 +1,6 @@
 package client;
 
-import app.carrental.Car;
+import dto.Car;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -15,11 +15,9 @@ import java.io.OutputStream;
 
 public class CarApiClient {
 
-    private static final String BASE_URL = "http://localhost:8080";
-
     public static List<Car> fetchAvailableCars() throws Exception {
 
-        URL url = new URL(BASE_URL + "/cars");
+        URL url = new URL(ApiClientConfig.BASE_URL + "/cars");
         HttpURLConnection connection =
                 (HttpURLConnection) url.openConnection();
 
@@ -39,35 +37,9 @@ public class CarApiClient {
         return cars;
     }
 
-    public static void rentCar(
-            int carId,
-            String customerName,
-            int days
-    ) throws Exception {
-
-        URL url = new URL(BASE_URL + "/rent");
-        HttpURLConnection connection =
-                (HttpURLConnection) url.openConnection();
-
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setDoOutput(true);
-
-        String json =
-                "{ \"carId\": " + carId +
-                        ", \"customerName\": \"" + customerName +
-                        "\", \"days\": " + days + " }";
-
-        OutputStream os = connection.getOutputStream();
-        os.write(json.getBytes());
-        os.flush();
-        os.close();
-
-        connection.getInputStream().close();
-    }
 
     public static void addCar(Car car) throws Exception {
-        URL url = new URL(BASE_URL + "/addcar");
+        URL url = new URL(ApiClientConfig.BASE_URL + "/addcar");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setRequestMethod("POST");

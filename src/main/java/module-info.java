@@ -12,12 +12,13 @@ module app.carrental {
     requires com.google.gson;
     requires com.oracle.database.jdbc;
 
-    opens dto to com.google.gson;
+    opens dto to com.google.gson, javafx.base;
     opens server to spark.core, com.google.gson;
 
 
 
-    opens app.carrental to org.junit.platform.commons, com.google.gson, javafx.fxml;
-
+    opens app.carrental to com.google.gson, javafx.fxml;
+    
+    exports dto;
     exports app.carrental;
 }

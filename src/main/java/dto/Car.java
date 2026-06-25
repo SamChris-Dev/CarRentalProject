@@ -1,4 +1,4 @@
-package app.carrental;
+package dto;
 
 public class Car {
 

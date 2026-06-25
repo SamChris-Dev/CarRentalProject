@@ -6,9 +6,8 @@ import javafx.fxml.*;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import dto.HistoryRecord;
+import client.HistoryApiClient;
 import java.io.*;
 import java.net.URL;
 import java.util.Date;
@@ -51,29 +50,11 @@ public class History implements Initializable {
     }
 
     private void loadHistoryFromDB() {
-        records.clear();
-
-
-        String sql = "SELECT * FROM rental_history ORDER BY action_date DESC";
-
-        try (
-                Connection con = DBConnection.getConnection();
-                Statement st = con.createStatement();
-                ResultSet rs = st.executeQuery(sql)
-        ) {
-            while (rs.next()) {
-                records.add(new HistoryRecord(
-                        rs.getInt("history_id"),
-                        rs.getInt("rental_id"),
-                        rs.getString("client_name"),
-                        rs.getInt("car_id"),
-                        rs.getInt("days"),
-                        rs.getDouble("total_price"),
-                        rs.getDate("action_date")
-                ));
-            }
+        try {
+            records.setAll(HistoryApiClient.fetchHistory());
         } catch (Exception e) {
             e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Failed to load history").show();
         }
     }
 }
