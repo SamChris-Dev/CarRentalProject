@@ -1,6 +1,5 @@
 # Car Rental Management System
 
-![Car Icon](Images/coupe-car.svg)
 
 A robust, enterprise-grade Client-Server application for managing car rentals seamlessly.
 
